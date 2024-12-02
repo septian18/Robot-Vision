@@ -1,7 +1,7 @@
-#import serial
-#import time
 import cv2
 import os
+#import serial
+#import time
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
@@ -10,164 +10,96 @@ base_folder = 'Capture_Dataset'
 if not os.path.exists(base_folder):
     os.makedirs(base_folder)
 
-# file_count = len([f for f in os.listdir(base_folder) if os.path.isfile(os.path.join(base_folder, f))])
 file_count = 0
 
-rgb_folder = os.path.join(base_folder, 'RGB_Datasset')
-if not os.path.exists(rgb_folder):
-    os.makedirs(rgb_folder)
-gray_folder = os.path.join(base_folder, 'Grayscale_Dataset')
-if not os.path.exists(gray_folder):
-    os. makedirs(gray_folder)
-binary_folder = os.path.join(base_folder, 'Binary_dataset')
-if not os.path.exists(binary_folder):
-    os.makedirs(binary_folder)
-data_folder = os.path.join(base_folder, 'Data_folder')
-if not os.path.exists(data_folder):
-    os.makedirs(data_folder)
-Mata_folder = os.path.join(base_folder, 'Mata_dataset')
-if not os.path.exists(Mata_folder):
-    os.makedirs(Mata_folder)
-Mulut_folder = os.path.join(base_folder, 'Mulut_dataset')
-if not os.path.exists(Mulut_folder):
-    os.makedirs(Mulut_folder)
+mata_rgb_folder = os.path.join(base_folder, 'Mata/RGB')
+mata_gray_folder = os.path.join(base_folder, 'Mata/Grayscale')
+mata_binary_folder = os.path.join(base_folder, 'Mata/Binary')
+mata_data_folder = os.path.join(base_folder, 'Mata/Data')
 
-rgb_filename = f'img_{file_count}_rgb.jpg'
-gray_filename = f'img_{file_count}_gray.jpg'
-binary_filename = f'img_{file_count}_binary.jpg'
-data_filename = f'data{file_count}.txt'
-Mata_filename = f'img_{file_count}_Mata.jpg'
-Mulut_filename = f'img_{file_count}_Mulut.jpg'
-Mata_data_filename = f'data{file_count}_Mata.txt'
-Mulut_data_filename = f'data{file_count}_Mulut.txt'
+mulut_rgb_folder = os.path.join(base_folder, 'Mulut/RGB')
+mulut_gray_folder = os.path.join(base_folder, 'Mulut/Grayscale')
+mulut_binary_folder = os.path.join(base_folder, 'Mulut/Binary')
+mulut_data_folder = os.path.join(base_folder, 'Mulut/Data')
 
+folders = [mata_rgb_folder, mata_gray_folder, mata_binary_folder, mata_data_folder,
+           mulut_rgb_folder, mulut_gray_folder, mulut_binary_folder, mulut_data_folder]
+for folder in folders:
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 while True:
     _, img = cap.read()
     _, img_frame = cap.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, binary = cv2.threshold(gray, 80,255, cv2.THRESH_BINARY)
+    _, binary = cv2.threshold(gray, 80, 255, cv2.THRESH_BINARY)
     _, binary_frame = cv2.threshold(gray, 110, 255, cv2.THRESH_BINARY)
     faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 
-    bc = None
-
     for (x, y, w, h) in faces:
-        # --------------------------------------------------------------------------------------------------------------------------------------------------------
-        #NormalPanel
-
-        # Main BB
+        # Bounding boxes and text annotations
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        # Coor Main
         main_coordinates_text = f'Main: ({x}, {y})'
         cv2.putText(img, main_coordinates_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        # Size Main
         main_size_text = f'{w} x {h} pixels'
         cv2.putText(img, main_size_text, (x, y + h + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-        # Panel Inner: Area lebih kecil dalam bounding box utama
         inner_x, inner_y, inner_w, inner_h = x + 35, y + 54, w - 70, h - 137
         cv2.rectangle(img, (inner_x, inner_y), (inner_x + inner_w, inner_y + inner_h), (0, 0, 255), 2)
-        cv2.putText(img, f'Inner: ({inner_x}, {inner_y})', (inner_x, inner_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    (0, 0, 255), 2)
-        cv2.putText(img, f'{inner_w} x {inner_h} pixels', (inner_x, inner_y + inner_h + 15),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(img, f'Inner: ({inner_x}, {inner_y})', (inner_x, inner_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(img, f'{inner_w} x {inner_h} pixels', (inner_x, inner_y + inner_h + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-        inner_xm, inner_ym, inner_wm, inner_hm = x +52, y + 116, w - 105, h - 130
+        inner_xm, inner_ym, inner_wm, inner_hm = x + 52, y + 116, w - 105, h - 130
         cv2.rectangle(img, (inner_xm, inner_ym), (inner_xm + inner_wm, inner_ym + inner_hm), (0, 0, 255), 2)
-        cv2.putText(img, f'Inner: ({inner_xm}, {inner_ym})', (inner_xm, inner_ym - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    (0, 0, 255), 2)
-        cv2.putText(img, f'{inner_wm} x {inner_hm} pixels', (inner_xm, inner_ym + inner_hm + 15),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(img, f'Inner: ({inner_xm}, {inner_ym})', (inner_xm, inner_ym - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(img, f'{inner_wm} x {inner_hm} pixels', (inner_xm, inner_ym + inner_hm + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-        # BinaryPanel
+        mata = img_frame[inner_y:inner_y + inner_h, inner_x:inner_x + inner_w]
+        bc = binary_frame[inner_y:inner_y + inner_h, inner_x:inner_x + inner_w]
+        gc = gray [inner_y:inner_y + inner_h, inner_x:inner_x + inner_w]
+        bin_mata = (bc/255).astype(int)
 
-        bin = cv2.rectangle(binary, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        mulut = img_frame [inner_ym:inner_ym + inner_hm, inner_xm:inner_xm + inner_wm]
+        bc_mulut = binary_frame [inner_ym:inner_ym + inner_hm, inner_xm:inner_xm + inner_wm]
+        gc_mulut = gray [inner_ym:inner_ym + inner_hm, inner_xm:inner_xm + inner_wm]
+        bin_mulut = (bc_mulut / 255).astype(int)
 
-        ix, iy, iw, ih = x + 20, y + 50, w - 40, h - 120
-        bin_cropped = cv2.rectangle(binary, (ix, iy), (ix + iw, iy + ih), (0, 255, 0), 2)
+        if 90 <= inner_w <= 100 and 20 <= inner_h <= 30:
+            cv2.putText(img, "in range, keep steady", (10, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            # print(bin_normalized)
+            if cv2.waitKey(1) & 0xFF == ord('p'):
+                # Save Mata images and data
+                cv2.imwrite(os.path.join(mata_rgb_folder, f'img_{file_count}_rgb.jpg'), mata)
+                cv2.imwrite(os.path.join(mata_gray_folder, f'img_{file_count}_gray.jpg'), gc)
+                cv2.imwrite(os.path.join(mata_binary_folder, f'img_{file_count}_binary.jpg'), bc)
 
-        bc = binary_frame[iy:iy+ih, ix:ix+iw]
+                with open(os.path.join(mata_data_folder, f'data{file_count}.txt'), 'w') as file:
+                    for row in bin_mata:
+                        file.write(' '.join(map(str, row)) + '\n')
 
-        mata = img_frame[inner_y:inner_y+inner_h, inner_x:inner_x+inner_w]
+                # Save Mulut images and data
+                cv2.imwrite(os.path.join(mulut_rgb_folder, f'img_{file_count}_rgb.jpg'), mulut)
+                cv2.imwrite(os.path.join(mulut_gray_folder, f'img_{file_count}_gray.jpg'), gc)
+                cv2.imwrite(os.path.join(mulut_binary_folder, f'img_{file_count}_binary.jpg'), bc_mulut)
 
-        mulut = img_frame[inner_ym:inner_ym+inner_hm, inner_xm:inner_xm+inner_wm]
-
-        bin_normalized = (bc/255).astype(int)
-
-
-        if  90 <= inner_w <= 95 and 20 <= inner_h <= 25:
-
-                cv2.putText(img, "in range, keep steady", (10, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                print(bin_normalized)
-                if cv2.waitKey(1) & 0xFF == ord('p'):
-                    cv2.imwrite(os.path.join(rgb_folder, rgb_filename), img_frame)
-                    cv2.imwrite(os.path.join(gray_folder, gray_filename), gray)
-                    cv2.imwrite(os.path.join(binary_folder, binary_filename), binary_frame)
-                    cv2.imwrite(os.path.join(Mata_folder, Mata_filename), mata)
-                    cv2.imwrite(os.path.join(Mulut_folder, Mulut_filename), mulut)
-
-                    with open(os.path.join(Mata_folder, Mata_data_filename), 'w') as file:
-                        for row in bin_normalized:
-                            file.write(' '.join(map(str, row)) + '\n')
-
-                    with open(os.path.join(Mulut_folder, Mulut_data_filename), 'w') as file:
-                        for row in normalized:
-                            file.write(' '.join(map(str, row)) + '\n')
-
-                # ser = serial.Serial('COM2', 9600)
-                # time.sleep(2)
-                #
-                # ser.write(b'[\n')
-                # for row in data:
-                #     ser.write(b'[')
-                #     for element in row:
-                #         ser.write(str(element).encode())
-                #         ser.write(b'')
-                #     ser.write(b']\n')
-                # ser.write(b']\n')
-                # ser.close()`
-
+                with open(os.path.join(mulut_data_folder, f'data{file_count}.txt'), 'w') as file:
+                    for row in bin_mulut:
+                        file.write(' '.join(map(str, row)) + '\n')
                 file_count += 1
-                rgb_filename = f'img_{file_count}_rgb.jpg'
-                gray_filename = f'img_{file_count}_gray.jpg'
-                binary_filename = f'img_{file_count}_binary.jpg'
-                data_filename = f'data{file_count}.txt'
-                Mata_filename = f'img_{file_count}_Mata.jpg'
-                Mulut_filename = f'img_{file_count}_Mulut.jpg'
-                Mata_data_filename = f'data{file_count}_Mata.txt'
-                Mulut_data_filename = f'data{file_count}_Mulut.txt'
 
+    '''            with open(os.path.join(mulut_data_folder, f'data{file_count}.txt'), 'w') as file:
+                    for row in bin_normalized:
+                        file.write(' '.join(map(str, row)) + '\n')
 
-        '''elif 71 <= inner_w <= 80 and 151 <= inner_h <= 160:
-            cv2.putText(img, f"don't get close: {inner_w} x {inner_h}", (10, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 185, 255), 2)
-        elif 50 <= inner_w <= 59 and 129 <= inner_h <= 139:
-            cv2.putText(img, f"you are too far: {inner_w} x {inner_h}", (10, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 185, 255), 2)
+                ser = serial.Serial('COM2', 9600)
+                time.sleep(2)
+'''
 
-        else :
-            cv2.putText(img, "out of range", (10, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)'''
-
-
-    # Display
     cv2.imshow('main', img)
-    #cv2.imshow('gray', gray)
     cv2.imshow('binary', binary_frame)
-    #cv2.imshow('img', img_frame)
-    #if bc is not None:
-        #cv2.imshow('data taken', bc)
-    #else:
-       #print("No valid image to display.")
-    #Stop if q key is pressed
+
     if cv2.waitKey(1) & 0xFF == 27:
         break
 
-# Release the VideoCapture object
 cap.release()
 cv2.destroyAllWindows()
-
-# Task : all clear
-# Normalized:checked
-# Capture data: checked
-#     Save matrix: checked
-#     face rgb, binary, gray: checked
-#output extended: checked (up to 30 rows x columns)
