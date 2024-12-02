@@ -104,8 +104,8 @@ while True:
                     cv2.imwrite(os.path.join(rgb_folder, rgb_filename), img_frame)
                     cv2.imwrite(os.path.join(gray_folder, gray_filename), gray)
                     cv2.imwrite(os.path.join(binary_folder, binary_filename), binary_frame)
-                    cv2.imwrite(os.path.join(Mata_folder, Mata_filename), mulut)
-                    cv2.imwrite(os.path.join(Mulut_folder, Mulut_filename), mata)
+                    cv2.imwrite(os.path.join(Mata_folder, Mata_filename), mata)
+                    cv2.imwrite(os.path.join(Mulut_folder, Mulut_filename), mulut)
 
                     with open(os.path.join(Mata_folder, Mata_data_filename), 'w') as file:
                         for row in bin_normalized:
